@@ -1,0 +1,23 @@
+﻿@model IEnumerable<DataLibrary.Models.FoodModel>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.Id)</th>
+            <th>@Html.DisplayNameFor(model => model.Title)</th>
+            <th>@Html.DisplayNameFor(model => model.Description)</th>
+            <th>@Html.DisplayNameFor(model => model.Price)</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var food in Model)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => food.Id)</td>
+                <td>@Html.DisplayFor(modelItem => food.Title)</td>
+                <td>@Html.DisplayFor(modelItem => food.Description)</td>
+                <td>@String.Format("{0:C}", food.Price)</td>
+            </tr>
+        }
+    </tbody>
+</table>

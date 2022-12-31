@@ -1,0 +1,15 @@
+﻿@model DataLibrary.Models.OrderModel
+
+@if(Model is null)
+{
+    <h4>THe requested order was not found.</h4>
+}
+else
+{
+    <div class="h4">
+        Are you sure you want to delete the order you placed on @Model.OrderDate?
+    </div>
+    <form asp-action="DeleteOrder">
+        <input type="submit" class="btn btn-danger" value="Delete" />
+    </form>
+}

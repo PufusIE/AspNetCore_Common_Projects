@@ -1,0 +1,24 @@
+﻿@page
+@model RazorUI.Pages.Food.MenuModel
+@{
+}
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Description</th>
+            <th>Price</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var food in Model.Foods)
+        {
+            <tr>
+                <td>@food.Title</td>
+                <td>@food.Description</td>
+                <td>@String.Format("{0:C}", food.Price)</td>
+            </tr>
+        }
+    </tbody>
+</table>

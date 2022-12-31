@@ -1,0 +1,50 @@
+﻿@model MvcUI.Models.OrderDisplayModel
+
+@if(Model.Order is null){
+    <h4>The requested record was not found.</h4>
+}
+else
+{
+<table class="table">
+    <tbody>
+        <tr>
+            <td>OrderName</td>
+            <td>@Model.Order.OrderName</td>
+        </tr>
+        <tr>
+            <td>Order Date</td>
+            <td>@Model.Order.OrderDate</td>
+        </tr>
+        <tr>
+            <td>Total</td>
+                <td>@String.Format("{0:C}", Model.Order.Total)</td>
+        </tr>
+        <tr>
+            <td>Item Ordered</td>
+            <td>@Model.OrderedMeal</td>
+        </tr>
+        <tr>
+            <td>Quantity</td>
+            <td>@Model.Order.Quantity</td>
+        </tr>       
+        <tr>
+            <td colspan="2">
+                <a asp-action="DeleteOrder" asp-route-id="@Model.Order.Id" class="btn btn-danger">Delete Order</a>
+            </td>
+        </tr>
+    </tbody>
+
+    <form asp-action="UpdateName">
+        <input type="hidden" name="id" value="@Model.Order.Id"/>
+        <div class="form-group">
+            <label class="control-label">Order Name</label>
+            <input type="text" name="orderName" value="@Model.Order.OrderName"/>
+        </div>
+        <div class="form-group">
+            <input type="submit" value="Update Order Name" class="btn btn-primary" />
+        </div>
+    </form>
+
+  
+</table>
+}

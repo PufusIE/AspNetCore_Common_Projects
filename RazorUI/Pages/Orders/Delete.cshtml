@@ -1,0 +1,19 @@
+﻿@page
+@model RazorUI.Pages.Orders.DeleteModel
+@{
+}
+
+@if (Model.Order is null){
+    <h4>Sorry, this page does not exist.</h4>
+}
+else{
+    <div class="h4"> Are you sure you want to delete the ordar you placed on @Model.Order.OrderDate?</div>
+
+    <form method="post">
+        <input asp-for="Id" value="@Model.Order.Id" type="hidden" />
+
+        <div class="form-group">
+            <input type="submit" class="btn btn-danger" value="Delete Order"/>
+        </div>
+    </form>
+}
