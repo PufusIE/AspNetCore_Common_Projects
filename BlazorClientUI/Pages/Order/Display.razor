@@ -1,0 +1,126 @@
+﻿@page "/Order/Display/{Id:int}"
+@inject HttpClient Http
+@inject NavigationManager navManager
+<h3>Display</h3>
+
+@if (recordNotFound == true)
+{
+    <h4>The Record was not found.</h4>
+}
+else if (orderInfo.Order is null)
+{
+    <h4>The page is loading...</h4>
+}
+else
+{
+    <table class="table">
+        <tbody>
+            <tr>
+                <td>OrderName</td>
+                <td>@orderInfo.Order.OrderName</td>
+            </tr>
+            <tr>
+                <td>Order Date</td>
+                <td>@orderInfo.Order.OrderDate</td>
+            </tr>
+            <tr>
+                <td>Total</td>
+                <td>@String.Format("{0:C}", orderInfo.Order.Total)</td>
+            </tr>
+            <tr>
+                <td>Item Ordered</td>
+                <td>@orderInfo.ItemPurchased</td>
+            </tr>
+            <tr>
+                <td>Quantity</td>
+                <td>@orderInfo.Order.Quantity</td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    @if (deleteConfirmed == false)
+                    {
+                        <button class="btn btn-danger" @onclick="(() => deleteConfirmed = true)">
+                            Delete Order
+                        </button>
+                    }
+                    else
+                    {
+                        <button class="btn btn-outline-danger" @onclick="HandleDeleteOrder">
+                            Confirm Delete
+                        </button>
+                        <button class="btn btn-secondary" @onclick="(() => deleteConfirmed = false)">
+                            Cancel
+                        </button>
+                    }
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <EditForm Model="updateModel" OnValidSubmit="HandleValidSubmit">
+        <DataAnnotationsValidator />
+        <ValidationSummary Model="updateModel"/>
+        <div class="form-group">
+            <label class="control-label">New Order Name</label>
+            <InputText @bind-Value="updateModel.UpdatedName" class="form-control"/>
+            <ValidationMessage class="text-danger" For="(() => updateModel.UpdatedName)"/>
+        </div>
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary">Update Name</button>
+        </div>
+    </EditForm>
+}
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    private OrderResultModel orderInfo = new OrderResultModel();
+    private OrderUpdateModel updateModel = new OrderUpdateModel();
+    private string errorMessage;
+    private bool recordNotFound = false;
+    private bool deleteConfirmed = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var response = await Http.GetAsync($"/api/Order/{Id}");
+
+        if (response.IsSuccessStatusCode)
+        {
+            orderInfo = await response.Content.ReadFromJsonAsync<OrderResultModel>();
+            updateModel.Id = orderInfo.Order.Id;
+            updateModel.UpdatedName = orderInfo.Order.OrderName;
+        }
+        else
+        {
+            recordNotFound = true;
+            errorMessage = response.ReasonPhrase;
+        }
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        try
+        {
+            HttpResponseMessage response = await Http.PutAsJsonAsync("api/Order", updateModel);
+            orderInfo.Order.OrderName = updateModel.UpdatedName;
+        }
+        catch (Exception ex)
+        {
+            errorMessage = ex.Message;
+        }
+    }
+
+    private async Task HandleDeleteOrder()
+    {
+        HttpResponseMessage response = await Http.DeleteAsync($"api/order/{Id}");
+
+        if (response.IsSuccessStatusCode == true)
+        {
+            navManager.NavigateTo("Food/Menu");
+        }
+        else
+        {
+            errorMessage = response.ReasonPhrase;
+        }
+    }
+}

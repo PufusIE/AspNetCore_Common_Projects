@@ -13,6 +13,14 @@ builder.Services.AddSingleton<IDataAccess, SqlDB>();
 builder.Services.AddSingleton<IFoodData, FoodData>();
 builder.Services.AddSingleton<IOrderData, OrderData>();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("MyOpenCorsPolicy", builder => 
+    builder.AllowAnyOrigin()
+    .AllowAnyHeader()
+    .AllowAnyMethod());
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -23,6 +31,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors("MyOpenCorsPolicy");
 
 app.UseAuthorization();
 
